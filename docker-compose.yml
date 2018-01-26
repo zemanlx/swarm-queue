@@ -3,6 +3,8 @@ version: '2.3'
 services:
   queue:
     image: rabbitmq:management-alpine
+    environment:
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: "-rabbit log_levels [{connection,warning}]"
     networks:
       - demo
     ports:
@@ -14,14 +16,36 @@ services:
       context: .
       target: publisher
     image: publisher
+    environment:
+      QUEUE_SERVER: "queue"
+      PUBLISHER_QUEUE_NAME: "job-phase-1"
+      TASK_FREQUENCY: 60
     networks:
       - demo
 
-  consumer:
+  job-phase-1:
+    build:
+      context: .
+      target: publisher-consumer
+    image: publisher-consumer
+    environment:
+      QUEUE_SERVER: "queue"
+      CONSUMER_QUEUE_NAME: "job-phase-1"
+      PUBLISHER_QUEUE_NAME: "job-phase-2"
+      TASK_DIFFICULTY: 10
+      TASK_GENERATED: 100
+    networks:
+      - demo
+
+  job-phase-2:
     build:
       context: .
       target: consumer
     image: consumer
+    environment:
+      QUEUE_SERVER: "queue"
+      CONSUMER_QUEUE_NAME: "job-phase-2"
+      TASK_DIFFICULTY: 1
     networks:
       - demo
 

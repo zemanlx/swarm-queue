@@ -1,6 +1,45 @@
-# Demo of RabbitMQ on Docker Swarm
+# Demo of RabbitMQ on Docker
 
-- `publisher` - posts one message for `consumer-phase1` per 2s
-- `consumer-phase1` - consumes messages from `publisher` it takes 5-10s to acknowlege and posts
-  5-10 messages for `consumer-phase2`
-- `consumer-phase2` - consumes messages from `consumer-phase1`, it takes 2-5s to acknowlege
+This repo is showing how RabbitMQ works. All is running in your docker so you
+do not need to install anything but docker tools.
+
+## Prerequisites
+- Docker
+- Docker Compose
+
+## Run this Demo
+1. Clone this repo
+1. From repo folder run `docker-compose up`
+1. Open rabbitmq [management](http://localhost:15672) interface (guest/guest)
+
+## How it works
+
+`ALL_CAPS` are environmet variables set in `docker-compose.yml` per each
+_service_.
+
+-   `publisher` - posts one message to `QUEUE_SERVER` to `PUBLISHER_QUEUE_NAME`
+    every `TASK_FREQUENCY` seconds
+
+-   `job-phase-1` - consumes messages from `CONSUMER_QUEUE_NAME`, it takes
+    `TASK_DIFFICULTY` to acknowlege a message and posts `TASK_GENERATED` number
+    of messages to `PUBLISHER_QUEUE_NAME`
+
+-   `job-phase-2` - consumes messages from `CONSUMER_QUEUE_NAME`, it takes
+    `TASK_DIFFICULTY` to acknowlege a message
+
+## Play with scale
+
+To have more fun with RabbitMQ you can tune environment variables in
+`docker-compose.yml` and/or open another shell in this repo and scale each
+service to give it a hard time.
+
+```bash
+docker-compose scale publisher=3
+docker-compose scale job-phase-1=10
+docker-compose scale job-phase-2=30
+```
+
+Sit back and enjoy logs from your first terminal and RabbitMQ Management Site.
+There is a high probability that your queues will grow or you waste compute
+resources so you can play scaling game as long as your have computer can handle
+it.
