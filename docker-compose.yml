@@ -1,0 +1,29 @@
+version: '2.3'
+
+services:
+  queue:
+    image: rabbitmq:management-alpine
+    networks:
+      - demo
+    ports:
+    - "15672:15672"
+    - "5672:5672"
+
+  publisher:
+    build:
+      context: .
+      target: publisher
+    image: publisher
+    networks:
+      - demo
+
+  consumer:
+    build:
+      context: .
+      target: consumer
+    image: consumer
+    networks:
+      - demo
+
+networks:
+  demo:
