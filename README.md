@@ -27,6 +27,9 @@ _service_.
 -   `job-phase-2` - consumes messages from `CONSUMER_QUEUE_NAME`, it takes
     `TASK_DIFFICULTY` to acknowlege a message
 
+![demo-1-architecture](https://user-images.githubusercontent.com/18702153/35512188-bdc18aca-04f6-11e8-8c37-0a99f0e87d7f.png)
+
+
 ## Play with scale
 
 To have more fun with RabbitMQ you can tune environment variables in
